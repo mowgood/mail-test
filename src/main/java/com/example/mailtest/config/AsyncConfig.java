@@ -6,34 +6,33 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
 @EnableAsync
 public class AsyncConfig {
 
+    private static final String THREAD_NAME_PREFIX = "Executor-";
+
     @Bean(name = "taskExecutor1")
     public Executor taskExecutor1() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-        taskExecutor.setRejectedExecutionHandler((r, executor) -> {
-            throw new IllegalArgumentException("허용된 요청 횟수 초과");
-        });
         taskExecutor.setCorePoolSize(15);
         taskExecutor.setMaxPoolSize(30);
         taskExecutor.setQueueCapacity(100);
-        taskExecutor.setThreadNamePrefix("Executor1-");
+        taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        taskExecutor.setThreadNamePrefix(THREAD_NAME_PREFIX);
         return taskExecutor;
     }
 
     @Bean(name = "taskExecutor2")
     public Executor taskExecutor2() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-        taskExecutor.setRejectedExecutionHandler((r, executor) -> {
-            throw new IllegalArgumentException("허용된 요청 횟수 초과");
-        });
-        taskExecutor.setCorePoolSize(3);
+        taskExecutor.setCorePoolSize(10);
         taskExecutor.setMaxPoolSize(30);
-        taskExecutor.setQueueCapacity(100);
-        taskExecutor.setThreadNamePrefix("Executor2-");
+        taskExecutor.setQueueCapacity(10);
+        taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        taskExecutor.setThreadNamePrefix(THREAD_NAME_PREFIX);
         return taskExecutor;
     }
 }

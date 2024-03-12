@@ -13,7 +13,7 @@ public class MockMailService implements MailService {
     @Async("taskExecutor1")
     public void sendMailAsync(MailSendRequest request) {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(5000);
             log.info("MockMailService : " + Thread.currentThread().getName());
         } catch (InterruptedException e) {
             e.printStackTrace();
